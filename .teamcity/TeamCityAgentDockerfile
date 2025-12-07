@@ -1,0 +1,8 @@
+FROM jetbrains/teamcity-agent:latest
+
+# Install basic tools
+USER root
+RUN apt-get update && \
+    apt-get -y install \
+    zip
+USER 1001
