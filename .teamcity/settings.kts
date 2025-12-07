@@ -26,7 +26,7 @@ object Build : BuildType({
             id = "Zip"
             scriptContent = """
                 zip -roX apidocs.zip target/reports/apidocs
-                touch -t 20000101000000 apidocs.zip
+                touch -t 200001010000 apidocs.zip
             """.trimIndent()
         }
     }
