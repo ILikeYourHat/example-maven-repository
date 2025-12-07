@@ -26,7 +26,7 @@ object Build : BuildType({
             id = "Zip"
             scriptContent = """
                 mkdir target/teamcity
-                zip -r target/teamcity/apidocs.zip target/reports/apidocs
+                zip -ro target/teamcity/apidocs.zip target/reports/apidocs
             """.trimIndent()
         }
     }
