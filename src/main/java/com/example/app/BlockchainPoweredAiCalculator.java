@@ -6,7 +6,7 @@ package com.example.app;
 public class BlockchainPoweredAiCalculator {
 
     /**
-     * This is the state-of-the-art Blockchain powered AI addition
+     * This is the state-of-the-art Blockchain powered AI addition.
      *
      * @param first first number to add
      * @param second second number to add
