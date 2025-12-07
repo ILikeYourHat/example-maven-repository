@@ -25,8 +25,10 @@ object Build : BuildType({
             name = "Zip JavaDocs"
             id = "Zip"
             scriptContent = """
-                zip -r ciOutput/apidocs.zip target/reports/apidocs
+                zip -r target/teamcity/apidocs.zip target/reports/apidocs
             """.trimIndent()
         }
     }
+
+    artifactRules = "+:target/teamcity/apidocs.zip"
 })
