@@ -1,6 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildSteps.maven
-import jetbrains.buildServer.configs.kotlin.buildSteps.script
 
 version = "2025.11"
 
@@ -19,17 +18,9 @@ object Build : BuildType({
         maven {
             name = "Generate JavaDocs"
             id = "Maven2"
-            goals = "javadoc:javadoc"
-        }
-        script {
-            name = "Zip JavaDocs"
-            id = "Zip"
-            scriptContent = """
-                cd target/reports/apidocs
-                zip -roX ../../../apidocs.zip *
-            """.trimIndent()
+            goals = "javadoc:javadoc assembly:single"
         }
     }
 
-    artifactRules = "+:apidocs.zip"
+    artifactRules = "+:target/apidocs.zip"
 })
