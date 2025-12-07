@@ -26,7 +26,8 @@ object Build : BuildType({
             id = "Zip"
             scriptContent = """
                 zip -roX apidocs.zip target/reports/apidocs
-                touch -t 0 apidocs.zip
+                # set time to 2000-01-01T00:00:00Z
+                touch -t 946684800 apidocs.zip
             """.trimIndent()
         }
     }
