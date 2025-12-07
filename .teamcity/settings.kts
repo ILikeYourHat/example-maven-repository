@@ -25,8 +25,8 @@ object Build : BuildType({
             name = "Zip JavaDocs"
             id = "Zip"
             scriptContent = """
-                cd target/reports
-                zip -roX ../../apidocs.zip apidocs
+                cd target/reports/apidocs
+                zip -roX ../../../apidocs.zip *
             """.trimIndent()
         }
     }
