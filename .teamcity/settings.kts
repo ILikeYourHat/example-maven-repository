@@ -21,14 +21,14 @@ object Build : BuildType({
             id = "Maven2"
             goals = "javadoc:javadoc"
         }
-        script {
-            name = "Zip JavaDocs"
-            id = "Zip"
-            scriptContent = """
-                zip -r target/teamcity/apidocs.zip target/reports/apidocs
-            """.trimIndent()
-        }
+//        script {
+//            name = "Zip JavaDocs"
+//            id = "Zip"
+//            scriptContent = """
+//                zip -r target/teamcity/apidocs.zip target/reports/apidocs
+//            """.trimIndent()
+//        }
     }
 
-    artifactRules = "+:target/teamcity/apidocs.zip"
+    artifactRules = "+:target/reports/apidocs/** => apidocs.zip"
 })
