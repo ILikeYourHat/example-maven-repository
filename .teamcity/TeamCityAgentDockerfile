@@ -4,5 +4,5 @@ FROM jetbrains/teamcity-agent:latest
 USER root
 RUN apt-get update && \
     apt-get -y install \
-    zip
+    wget
 USER 1001
