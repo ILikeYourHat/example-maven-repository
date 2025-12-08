@@ -65,7 +65,7 @@ object SyncReleaseNotes : BuildType({
             name = "Download release notes"
             scriptContent = """
                 mkdir releaseNotes
-                wget -P releaseNotes --page-requisites --convert-links --no-parent "$releaseNotesPage"
+                wget -P releaseNotes --page-requisites --convert-links "$releaseNotesPage"
             """.trimIndent()
         }
     }
