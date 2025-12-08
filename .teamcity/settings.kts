@@ -52,6 +52,7 @@ object SyncReleaseNotes : BuildType({
                 hour = 6
             }
             triggerBuild = always()
+            branchFilter = "+:<default>"
         }
     }
 
