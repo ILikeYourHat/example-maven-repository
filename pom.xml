@@ -87,6 +87,10 @@
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>3.8.0</version>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.12.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 

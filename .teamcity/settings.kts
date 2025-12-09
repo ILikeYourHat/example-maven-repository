@@ -1,7 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.notifications
 import jetbrains.buildServer.configs.kotlin.buildFeatures.sshAgent
-import jetbrains.buildServer.configs.kotlin.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.triggers.schedule
 import jetbrains.buildServer.configs.kotlin.ui.add
