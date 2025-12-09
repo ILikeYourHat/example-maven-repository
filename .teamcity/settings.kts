@@ -24,6 +24,7 @@ object Build : BuildType({
             name = "Generate JavaDocs"
             scriptContent = """
                 ./mvnw javadoc:javadoc assembly:single
+                ./mvnw help:effective-pom
             """.trimIndent()
         }
     }
