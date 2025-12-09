@@ -65,11 +65,12 @@ object SyncReleaseNotes : BuildType({
         script {
             name = "Download release notes"
             scriptContent = """
+                rm -r releaseNotes
                 wget -P releaseNotes --page-requisites --convert-links "$releaseNotesPage"
             """.trimIndent()
         }
         script {
-            name = "Test Github connection"
+            name = "Try to push release notes to repository"
             scriptContent = """
                 ./sync_release_notes.sh
             """.trimIndent()
