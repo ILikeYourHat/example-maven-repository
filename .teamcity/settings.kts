@@ -21,10 +21,11 @@ object Build : BuildType({
     }
 
     steps {
-        maven {
+        script {
             name = "Generate JavaDocs"
-            id = "Maven2"
-            goals = "javadoc:javadoc assembly:single"
+            scriptContent = """
+                ./mvnw javadoc:javadoc assembly:single
+            """.trimIndent()
         }
     }
 
