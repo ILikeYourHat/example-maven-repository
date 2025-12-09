@@ -71,8 +71,7 @@ object SyncReleaseNotes : BuildType({
         script {
             name = "Test Github connection"
             scriptContent = """
-                git diff --name-only
-                git pull
+                ./sync_release_notes.sh
             """.trimIndent()
         }
     }
