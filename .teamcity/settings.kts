@@ -65,14 +65,14 @@ object SyncReleaseNotes : BuildType({
         script {
             name = "Download release notes"
             scriptContent = """
-                mkdir releaseNotes
                 wget -P releaseNotes --page-requisites --convert-links "$releaseNotesPage"
             """.trimIndent()
         }
         script {
             name = "Test Github connection"
             scriptContent = """
-                ssh -T git@github.com
+                git diff --name-only
+                git pull
             """.trimIndent()
         }
     }
