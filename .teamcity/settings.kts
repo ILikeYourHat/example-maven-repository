@@ -1,5 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.notifications
+import jetbrains.buildServer.configs.kotlin.buildFeatures.sshAgent
 import jetbrains.buildServer.configs.kotlin.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.triggers.schedule
@@ -67,6 +68,20 @@ object SyncReleaseNotes : BuildType({
                 mkdir releaseNotes
                 wget -P releaseNotes --page-requisites --convert-links "$releaseNotesPage"
             """.trimIndent()
+        }
+        script {
+            name = "Test Github connection"
+            scriptContent = """
+                ssh -T git@github.com
+            """.trimIndent()
+        }
+    }
+
+    features {
+        add {
+            sshAgent {
+                teamcitySshKey = "GitHub push key"
+            }
         }
     }
 
