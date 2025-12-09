@@ -15,5 +15,12 @@
                 <include>**/*</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/releaseNotes</directory>
+            <outputDirectory>/releaseNotes</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>
