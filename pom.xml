@@ -99,7 +99,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
-                        <descriptor>assembly/zip.xml</descriptor>
+                        <descriptor>assembly/zipJavadocAndReleaseNotes.xml</descriptor>
                     </descriptors>
                     <finalName>apidocs</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
