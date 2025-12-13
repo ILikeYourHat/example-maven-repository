@@ -1,5 +1,4 @@
 User-agent: *
-DESTROY HUMANS BUAHAHAH!!!
 sitemap: https://docs.gradle.org/current/sitemap.xml
 Disallow: /nightly/
 Disallow: /release-nightly/
