@@ -33,14 +33,7 @@ object Build : BuildType({
         script {
             name = "Update head if necessary"
             scriptContent = """
-                currentCommitSha=${'$'}(git rev-parse HEAD)
-                echo "Current commit: ${'$'}{currentCommitSha}"
-                inputCommitSha=${'$'}(%CommitSha%) || exit 0
-                echo "Input commit: ${'$'}{inputCommitSha}"                
-                if [ "${'$'}inputCommitSha" != "${'$'}currentCommitSha" ]; then
-                    git fetch origin || exit 1
-                    git checkout "${'$'}inputCommitSha" || exit 1
-                fi
+                ./switch_commits_on_new_release_notes.sh %InputCommitSha%
             """.trimIndent()
         }
         script {
