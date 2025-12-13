@@ -15,6 +15,14 @@ project {
 object Build : BuildType({
     name = "Build"
 
+    dependencies {
+        snapshot(SyncReleaseNotes) {
+            runOnSameAgent = true
+            onDependencyFailure = FailureAction.IGNORE
+            synchronizeRevisions = false
+        }
+    }
+
     vcs {
         root(DslContext.settingsRoot)
     }
