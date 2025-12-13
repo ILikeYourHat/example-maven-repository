@@ -6,6 +6,13 @@ package com.example.app;
 public class BlockchainPoweredAiCalculator {
 
     /**
+     * The default constructor
+     */
+    public BlockchainPoweredAiCalculator() {
+        // noop
+    }
+
+    /**
      * This is the state-of-the-art Blockchain powered AI addition.
      *
      * @param first first number to add
