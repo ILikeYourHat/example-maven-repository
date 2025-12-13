@@ -32,7 +32,6 @@ object Build : BuildType({
             name = "Generate JavaDocs"
             scriptContent = """
                 ./mvnw javadoc:javadoc assembly:single
-                ./mvnw help:effective-pom
             """.trimIndent()
         }
     }
@@ -84,6 +83,10 @@ object SyncReleaseNotes : BuildType({
                 ./sync_release_notes.sh
             """.trimIndent()
         }
+    }
+
+    outputParams {
+        param("OutputCommitSha", "%CommitSha%")
     }
 
     features {

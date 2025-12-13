@@ -13,6 +13,10 @@ git add releaseNotes
 if ! git diff --cached --quiet; then
   git commit -m "Automatic sync: updated release notes" || exit 1
   git push || exit 1
+  commitSha=$(git rev-parse HEAD)
+  echo "##teamcity[setParameter name='CommitSha' value='$commitSha']"
 else
   echo "No files to sync"
 fi
+
+
