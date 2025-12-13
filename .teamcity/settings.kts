@@ -34,7 +34,7 @@ object Build : BuildType({
             name = "Update head if necessary"
             scriptContent = """
                 commitSha=${'$'}(%CommitSha%)
-                if ${'$'}commitSha then
+                if ${'$'}commitSha; then
                     git checkout ${'$'}commitSha || exit 1
                 fi
             """.trimIndent()
