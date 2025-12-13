@@ -32,10 +32,10 @@ object Build : BuildType({
     steps {
         script {
             name = "Update head if necessary"
-            scriptContent = $$"""
-                commitSha=$(%CommitSha%)
-                if $commitSha then
-                    git checkout $commitSha || exit 1
+            scriptContent = """
+                commitSha=${'$'}(%CommitSha%)
+                if ${'$'}commitSha then
+                    git checkout ${'$'}commitSha || exit 1
                 fi
             """.trimIndent()
         }
