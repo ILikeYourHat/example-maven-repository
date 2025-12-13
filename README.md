@@ -15,17 +15,23 @@ according to the instructions on their site.
 
 First of all, in the Podman's "Images" section click on the "Pull" button, type
 `docker.io/jetbrains/teamcity-server:2025.11` and then click "Pull image". After downloading, click "Run image" button
-to configure the container. For now no additional configuration is needed, you only need to remember on which port
+to configure the container (this small triangle).
+
+![image](img/img_8.png)
+
+For now no additional configuration is needed, you only need to remember on which port
 the container will run (for the rest of guide, let's assume it's 8111, so TeamCity instance will be available under
 http://localhost:8111). Click the "Start container" button and wait till it will boot up.
+
+![image](img/img_9.png)
 
 It's now time to perform the first configuration of the TeamCity instance. Go to http://localhost:8111 and wait till the
 "TeamCity First Start" screen will appear. Click "Proceed" to initialize the data directory, then "Proceed" to use the
 `Internal (HSQLDB)` database type (it's more than enough for our project). Next, agree to the Terms & Conditions by
 clicking "Accept" at the bottom of the page. After some time, a login screen will appear. Click "Login as Super user",
 then paste the "Super user authentication token" (it will appear under the "Tty" tab in the running container details
-in Podman, if you can't see it just refresh the TC page). Now click the "Login" button. An empty TeamCity screen should
-appear, congratulations!
+in Podman, if you can't see it just refresh the TeamCity page). Now click the "Login" button. An empty TeamCity screen
+should appear, congratulations!
 
 ### Connecting to the GitHub Project
 
@@ -33,6 +39,8 @@ On the main page of TeamCity instance, click on the "Create project..." button i
 - Project name: `ExampleMavenRepository`
 - Project ID: `ExampleMavenRepository`
 - Project description: leave empty
+
+![image](img/img_10.png)
 
 Submit the form by clicking on the "Create" button. This project is hosted on GitHub, so expand this section and click
 the "Add" button next to "GitHub.com" option. Register the TeamCity app through your GitHub account by clicking the
@@ -49,13 +57,17 @@ screen, click the "Log in" button to be able to select the desired repository, c
 type `ILikeYourHat/example-maven-repository` in the input field, leave the default settings and click the "Create"
 button. Congratulations, the TC instance is connected to our project!
 
+![image](img/img_11.png)
+
 ### Enabling Kotlin DSL for our project
 
 Most of the CI logic for our repository is already defined in the VCS in the Kotlin format, so we must import them.
 Follow the instructions under
 [the official documentation](https://www.jetbrains.com/help/teamcity/kotlin-dsl.html#Getting+Started+with+Kotlin+DSL).
 Your configuration should look like this:
+
 ![image](img/img_1.png)
+
 After clicking "Apply", a popup titled "Existing Project Setting Detected". Click "Import settings from VCS" and wait
 until the settings will be applied. At the left panel, you should see two build types: "Build" and "Sync release notes".
 
@@ -81,7 +93,7 @@ configuration works. When you are done, click the "Save" button.
 ### Setting up SSH keys
 
 In our CI workflows we are using some commands that require pushing and pulling from git server. TeamCity provides no
-way to do this besides the initial checkout, so we must set up our own SSH connectio to do this.
+way to do this besides the initial checkout (as far I as know), so we must set up our own SSH connection to do this.
 
 On the main page of TeamCity, select our project ("ExampleMavenProject") on the projects list, and then click "Settings"
 button on the right top corner of the page. Navigate to the "SSH keys" section, and click "Generate SSH key" button.
@@ -131,7 +143,8 @@ workflow and in the top right corner click the "Build" button. If everything was
 
 ## CI workflow explained
 
-The CI workflows logic is stored in the [settings.kts file](.teamcity/settings.kts)
+The CI workflows logic is stored in the [settings.kts file](.teamcity/settings.kts). Feel free to explore it while you
+are reading my detailed explanation.
 
 ### Sync release notes
 
@@ -180,3 +193,22 @@ as my personal e-mail.
 
 ## Reproducible builds config explained
 
+I've managed to make the result of executing the `./mvnw javadoc:javadoc assembly:single` command byte-to-byte
+reproducible between the TeamCity agent (using Ubuntu 24.04.3 LTS) and my personal computer (using Windows 11). I've
+verified it uploading both artifacts to the https://try.diffoscope.org/ page.
+
+What I've done to achieve this:
+- Not trying to download the release notes page as the part of maven build, because this is an external resource, that
+might change without notice.
+- Not depending on the version of Maven build tool installed, but instead using the
+[Maven wrapper](https://maven.apache.org/tools/wrapper/) approach.
+- Using JDK toolchain plugin to force building using only Amazon Corretto 21.0.9. I found out that different versions
+of JDK platform can generate different javadocs, the main issue being the bundled jQuery version.
+- Good practices like defining the maven plugin versions inside `pluginManagement` block.
+- Adding `project.build.outputTimestamp` property to erase actual timestamps from archived files
+- Unifying line endings between OSes when creating the archive files ([here](assembly/zipJavadocAndReleaseNotes.xml)).
+- Excluding the `legal` directory from the generated javadoc: for some reason, the build on CI was producing the actual
+Java licenses, and on local machine I had only references to them. I couldn't figure out why (even using exactly the
+same JDK didn't help), so I've decided for now to exclude this folder from the archive. I think it is a good enough
+approach for a QA build. If you think different, I could also store those license files in the repo and replace
+them in the final archive, overwriting the non-reproducible ones.
