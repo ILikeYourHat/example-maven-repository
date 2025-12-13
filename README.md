@@ -2,11 +2,16 @@
 
 ## Setting up the environment
 
-In a real case scenario, this setup should be deployed . 
-
-For running our server and agents instance, we will be using [Podman](https://podman.io/).
+In a real case scenario, this setup should be deployed probably somewhere in a cloud environment. But because this is
+a recruiting task and not an enterprise project, I will show you how to configure it on a local machine. Keep in mind
+that some steps require accounts with certain privileges (like my own GitHub account) and specific credentials
+(like for the SMTP server). Also, I'm doing some things (like using the Super User account) that I would never do in
+a production infrastructure, for the sake of simplicity.
 
 ### Setting up TeamCity server instance
+
+For running our server and agents instance, we will be using [Podman](https://podman.io/). Download it and install
+according to the instructions on their site.
 
 First of all, in the Podman's "Images" section click on the "Pull" button, type
 `docker.io/jetbrains/teamcity-server:2025.11` and then click "Pull image". After downloading, click "Run image" button
@@ -122,7 +127,56 @@ the default pool.
 After everything is set up, it's time to test if everything was done correctly. On the left panel, click the "Build"
 workflow and in the top right corner click the "Build" button. If everything was done correctly, the build should pass.
 
+![image](img/img_7.png)
+
 ## CI workflow explained
+
+The CI workflows logic is stored in the [settings.kts file](.teamcity/settings.kts)
+
+### Sync release notes
+
+Let's look closer what is actually happening in the workflow we just run. Let's start with the 'Sync release notes'
+workflow. Our initial goal was to download the latest release notes from a marketing team's website and include it in the
+output. There are also few restrictions that narrow down the possible solutions:
+- our build must be reproducible, and fetching data from external, rapidly-changing source prevents this
+- our build must handle release notes server unavailability, so it doesn't fail
+- our build must try to provide as recent version of release notes as possible
+
+Because of those requirements, I've decided that the best solution will be periodically downloading the release notes
+and storing them in our repo. Thanks to this:
+- we are not breaking reproducible builds (because the actual build is not using the remote content)
+- handles release notes server unavailability (it just takes the most recent version of them stored in repository)
+- provides as recent version of release notes as possible (syncing it every day, and also before the actual build to
+handle last-minute changes)
+
+So the actual flow looks as follows:
+- Every day at 6am TeamCity is running the sync workflow.
+- In the first script, we are downloading the release notes page. We remove everything that was downloaded, and then
+download the whole page using the `wget` command (bundled in the customized build agent).
+- In the next script, we are playing with git. After some initial setup, we are checking if there are any changes in
+the release notes directory. If no, the script ends. If yes, we are commiting those files to the repository, using the
+SSH deploy key from the TeamCity instance.
+- We are also exposing the current commit (with or without changes) as a output parameter, but more about it later.
+- This workflow of course might fail if the release notes server is not available, but this is fine, because this is not
+the workflow that provides the distribution archive. Also, it is good to know how recent the release notes are: if the
+marketing server is not available for a week, maybe it is a good idea to let them know ;)
+
+### Build
+
+This is the actual workflow that produces the distribution archive. The actual flow looks as follows:
+- The build is invoked only manually, so the developers have control when they want to deliver the archive to the QA team.
+- First of all, we are using chain builds to invoke "Sync release notes" one more time before the actual build. We are
+however ignoring the actual result, so it cannot affect the further execution.
+- The first step, "Update HEAD if necessary", analyzes if the release notes changed because of previous sync, by
+comparing the output commit from previous build with the current commit. If they differ, the scripts performs checkout
+to the updated commit. If the output commit is missing (because the previous build fail), the script is skipped.
+- Now, in the next step, we can finally perform the actual build. We are executing two maven commands: `javadoc:javadoc`
+to generate the required javadoc pages, and `assembly:single` to pack them together with the release notes in a single
+distribution archive.
+- The distribution archive is then marked as artifact, so the QA team will be able to download it easily from the build
+page. I'm assuming that the QA team have the necessary technical knowledge and TeamCity accounts to do this.
+- Also, at the end of a successful build, an e-mail is sent to the QA team to notify them. In the code it is represented
+as my personal e-mail.
 
 ## Reproducible builds config explained
 
