@@ -52,6 +52,8 @@ object Build : BuildType({
                 }
                 buildFinishedSuccessfully = true
             }
+        }
+        add {
             sshAgent {
                 teamcitySshKey = "GitHub push key"
             }

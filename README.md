@@ -95,11 +95,32 @@ Save this deploy key. We are now one step away from running our first CI build!
 
 ### Setting up TeamCity agent instance
 
+We have now a fully configured TeamCity instance, but still no way to run our first workflow. To do this, we must
+create and run our first TeamCity agent instance.
 
+First of all, because of some external dependencies, we must build our own custom TeamCity agent image. To do this, open
+Podman, click on the "Images" tab on the left, and then "Build" button on the top right. As the Containerfile path,
+select the `TeamCityAgentDockerfile` located in the `.teamcity` directory. Pick the name you like,
+e.g. `custom-teamcity-agent`, and click "Build" button. Wait till building the image will finish.
+![image](img/img_4.png)
+
+Now when the image is ready, run it. There are however two things to configure before it can be started:
+- add the environment variable `SERVER_URL` with the TeamCity server instance address, in our case: http://localhost:8111
+- on the "Networking" tab, under "Select container networking section", select the "Use another container networking
+stack" and then point to the container with the TeamCity server instance.
+
+![image](img/img_5.png)
+
+After that, click the "Start container button". Then go to the TeamCity server page, and click the "Agents" button
+in the left panel. Wait till the agent will be ready and connect to the server, click "Authorize..." and add it to
+the default pool.
+
+![image](img/img_6.png)
 
 ### Running our workflow
 
-
+After everything is set up, it's time to test if everything was done correctly. On the left panel, click the "Build"
+workflow and in the top right corner click the "Build" button. If everything was done correctly, the build should pass.
 
 ## CI workflow explained
 
