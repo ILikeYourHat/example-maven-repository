@@ -9,8 +9,9 @@ git remote set-url --push origin 'git@github.com:ILikeYourHat/example-maven-repo
 # Add all files from the target folder
 git add releaseNotes
 
-# Check if there is anything to commit
+# Check if there is anything to commit in release notes
 if ! git diff --cached --quiet; then
+  # Commit those changes
   git commit -m "Automatic sync: updated release notes" || exit 1
   git push || exit 1
 else

@@ -31,7 +31,7 @@ object Build : BuildType({
 
     steps {
         script {
-            name = "Update head if necessary"
+            name = "Update HEAD if necessary"
             scriptContent = """
                 ./.teamcity/scripts/switch_commits_on_new_release_notes.sh %InputCommitSha%
             """.trimIndent()
