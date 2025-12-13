@@ -22,7 +22,7 @@ object Build : BuildType({
     }
 
     params {
-        param("CommitSha", "%dep.ExampleMavenRepository_SyncReleaseNotes.OutputCommitSha%")
+        param("InputCommitSha", "%dep.ExampleMavenRepository_SyncReleaseNotes.OutputCommitSha%")
     }
 
     vcs {
@@ -33,9 +33,12 @@ object Build : BuildType({
         script {
             name = "Update head if necessary"
             scriptContent = """
-                inputCommitSha=${'$'}(%CommitSha%)
                 currentCommitSha=${'$'}(git rev-parse HEAD)
+                echo "Current commit: ${'$'}{currentCommitSha}"
+                inputCommitSha=${'$'}(%CommitSha%) || exit 0
+                echo "Input commit: ${'$'}{inputCommitSha}"                
                 if [ "${'$'}inputCommitSha" != "${'$'}currentCommitSha" ]; then
+                    git fetch origin || exit 1
                     git checkout "${'$'}inputCommitSha" || exit 1
                 fi
             """.trimIndent()
