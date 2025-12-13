@@ -33,7 +33,7 @@ object Build : BuildType({
         script {
             name = "Update head if necessary"
             scriptContent = """
-                ./switch_commits_on_new_release_notes.sh %InputCommitSha%
+                ./.teamcity/scripts/switch_commits_on_new_release_notes.sh %InputCommitSha%
             """.trimIndent()
         }
         script {
@@ -88,7 +88,7 @@ object SyncReleaseNotes : BuildType({
         script {
             name = "Try to push release notes to repository"
             scriptContent = """
-                ./sync_release_notes.sh
+                ./.teamcity/scripts/sync_release_notes.sh
             """.trimIndent()
         }
     }
