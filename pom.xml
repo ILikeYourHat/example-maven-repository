@@ -13,6 +13,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputTimestamp>2000-01-01T00:00:00Z</project.build.outputTimestamp>
         <maven.compiler.release>17</maven.compiler.release>
+        <toolchain.jdk.version>21.0.9</toolchain.jdk.version>
+        <!-- Vendor for Amazon Corretto JDK -->
+        <toolchain.jdk.vendor>Amazon.com Inc.</toolchain.jdk.vendor>
     </properties>
 
     <dependencyManagement>
@@ -44,6 +47,11 @@
     <build>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-toolchains-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
                 <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
@@ -95,6 +103,16 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>select-jdk-toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
