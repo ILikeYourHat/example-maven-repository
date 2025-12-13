@@ -33,9 +33,10 @@ object Build : BuildType({
         script {
             name = "Update head if necessary"
             scriptContent = """
-                commitSha=${'$'}(%CommitSha%)
-                if ${'$'}commitSha; then
-                    git checkout ${'$'}commitSha || exit 1
+                inputCommitSha=${'$'}(%CommitSha%)
+                currentCommitSha=${'$'}(git rev-parse HEAD)
+                if [ "${'$'}inputCommitSha" != "${'$'}currentCommitSha" ]; then
+                    git checkout "${'$'}inputCommitSha" || exit 1
                 fi
             """.trimIndent()
         }
