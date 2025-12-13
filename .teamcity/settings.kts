@@ -17,10 +17,12 @@ object Build : BuildType({
 
     dependencies {
         snapshot(SyncReleaseNotes) {
-            runOnSameAgent = true
             onDependencyFailure = FailureAction.IGNORE
-            synchronizeRevisions = false
         }
+    }
+
+    params {
+        param("CommitSha", "%dep.ExampleMavenRepository_SyncReleaseNotes.OutputCommitSha%")
     }
 
     vcs {
@@ -28,6 +30,15 @@ object Build : BuildType({
     }
 
     steps {
+        script {
+            name = "Update head if necessary"
+            scriptContent = $$"""
+                commitSha=$(%CommitSha%)
+                if $commitSha then
+                    git checkout $commitSha || exit 1
+                fi
+            """.trimIndent()
+        }
         script {
             name = "Generate JavaDocs"
             scriptContent = """
@@ -86,6 +97,7 @@ object SyncReleaseNotes : BuildType({
     }
 
     outputParams {
+        exposeAllParameters = false
         param("OutputCommitSha", "%CommitSha%")
     }
 
